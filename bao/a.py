@@ -1,3 +1,7 @@
+import math
+from unicodedata import name
+
+
 def filedoc(filename:str,doc:bool = False) -> str:
     finddoc = filename.rfind('.')
     if not doc :
@@ -46,3 +50,41 @@ def midfind(lst:list,nmb:int) -> int:
 if __name__ == '__main__':
     print(midfind([11, 23, 24, 53, 57, 64, 73, 73, 78],78))
      
+# class Student:
+
+#     def __init__(self,name:str,age:int,sex:str) -> None:
+#         self.name = name
+#         self.age = age
+#         self.sex = sex
+
+#     def study(self,kecheng):
+#         print(f'{self.name}正在学习{kecheng}')
+
+#     def eat(self):
+#         print(f'{self.name}正在吃')
+
+#     def watch_av(self):
+#         print(f'{self.name}正在收看av')
+
+
+class circle:
+
+    def __init__(self,redius:float) -> None:
+        self.redius = redius
+
+    def zhouchang(self):
+        return 2 * self.redius * math.pi
+
+    def mianji(self):
+        return math.pi * self.redius ** 2
+
+
+if __name__ == '__main__':
+    r = float(input('请输入你的半径:'))
+    xiao , da = circle(r) ,circle(r+3)
+    weiqiang = da.zhouchang() * 38.5
+    yongchi = xiao.mianji() * 18.5
+    print(f'围墙成本为{weiqiang:.2f}')
+    print(f'泳池成本为{yongchi:.2f}')
+    
+
