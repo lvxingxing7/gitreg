@@ -1,5 +1,8 @@
+from distutils.command.clean import clean
+import os
 import math
-from unicodedata import name
+from time import sleep, time
+
 
 
 def filedoc(filename:str,doc:bool = False) -> str:
@@ -67,7 +70,7 @@ def midfind(lst:list,nmb:int) -> int:
 #         print(f'{self.name}正在收看av')
 
 
-class circle:
+class Circle:
 
     def __init__(self,redius:float) -> None:
         self.redius = redius
@@ -79,12 +82,39 @@ class circle:
         return math.pi * self.redius ** 2
 
 
-if __name__ == '__main__':
-    r = float(input('请输入你的半径:'))
-    small , big = circle(r) ,circle(r+3)
-    perimeter_cost = big.perimeter() * 38.5
-    area_cost = small.area() * 18.5
-    print(f'围墙成本为{perimeter_cost:.2f}')
-    print(f'泳池成本为{area_cost:.2f}')
+# if __name__ == '__main__':
+#     r = float(input('请输入你的半径:'))
+#     small , big = circle(r) ,circle(r+3)
+#     perimeter_cost = big.perimeter() * 38.5
+#     area_cost = small.area() * 18.5
+#     print(f'围墙成本为{perimeter_cost:.2f}')
+#     print(f'泳池成本为{area_cost:.2f}')
     
+
+class Clock:
+
+    def __init__(self,hours=0,minutes=0,seconds=0) -> None:
+        self.hours = hours
+        self.minutes = minutes
+        self.seconds = seconds
+
+    def run(self):
+        self.seconds += 1
+        if self.seconds == 60 :
+            self.seconds = 0
+            self.minutes += 1
+            if self.minutes == 60 :
+                self.minutes = 0
+                self.hours += 1
+
+    def show(self):
+        return (f'{self.hours:0>2d}:{self.minutes:0>2d}:{self.seconds:0>2d}')
+
+if __name__ == '__main__':
+    clock = Clock()
+    while True:
+        os.system('cls')
+        print(clock.show())
+        sleep(1)
+        clock.run()
 
