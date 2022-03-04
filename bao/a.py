@@ -7,8 +7,8 @@ def filedoc(filename:str,doc:bool = False) -> str:
     if not doc :
         finddoc += 1
     return filename[finddoc:] if finddoc > 0 else ''
-if __name__ == '__main__':
-    print(filedoc('asc.py'))
+# if __name__ == '__main__':
+#      print(filedoc('asc.py'))
 
 def calcu ( init_value:int , fn , *args:int , **kwargs:int ) -> int:
     total = init_value
@@ -19,8 +19,8 @@ def calcu ( init_value:int , fn , *args:int , **kwargs:int ) -> int:
         if type(varg) in (int,float):
             total = fn(total,varg)
     return total
-if __name__ == '__main__':
-    print(calcu(100,lambda x , y : x + y ,111))
+# if __name__ == '__main__':
+#      print(calcu(100,lambda x , y : x + y ,111))
 
 def sort(lst:list,fn=lambda x , y : x > y ,resver:bool=False) -> list:
     new_lst = lst[:]
@@ -33,8 +33,8 @@ def sort(lst:list,fn=lambda x , y : x > y ,resver:bool=False) -> list:
         if not swap :
             break
     return new_lst
-if __name__ == '__main__':
-    print(sort([11,53,73,24,73,57,64,23,78]))
+# if __name__ == '__main__':
+#      print(sort([11,53,73,24,73,57,64,23,78]))
 
 def midfind(lst:list,nmb:int) -> int:
     start ,end = 0 ,len(lst) -1
@@ -47,8 +47,8 @@ def midfind(lst:list,nmb:int) -> int:
         else:
             return mid
     return -1
-if __name__ == '__main__':
-    print(midfind([11, 23, 24, 53, 57, 64, 73, 73, 78],78))
+# if __name__ == '__main__':
+    # print(midfind([11, 23, 24, 53, 57, 64, 73, 73, 78],78))
      
 # class Student:
 
