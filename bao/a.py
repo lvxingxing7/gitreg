@@ -72,19 +72,19 @@ class circle:
     def __init__(self,redius:float) -> None:
         self.redius = redius
 
-    def zhouchang(self):
+    def perimeter(self):
         return 2 * self.redius * math.pi
 
-    def mianji(self):
+    def area(self):
         return math.pi * self.redius ** 2
 
 
 if __name__ == '__main__':
     r = float(input('请输入你的半径:'))
-    xiao , da = circle(r) ,circle(r+3)
-    weiqiang = da.zhouchang() * 38.5
-    yongchi = xiao.mianji() * 18.5
-    print(f'围墙成本为{weiqiang:.2f}')
-    print(f'泳池成本为{yongchi:.2f}')
+    small , big = circle(r) ,circle(r+3)
+    perimeter_cost = big.perimeter() * 38.5
+    area_cost = small.area() * 18.5
+    print(f'围墙成本为{perimeter_cost:.2f}')
+    print(f'泳池成本为{area_cost:.2f}')
     
 
