@@ -89,7 +89,7 @@ class Circle:
 #     area_cost = small.area() * 18.5
 #     print(f'围墙成本为{perimeter_cost:.2f}')
 #     print(f'泳池成本为{area_cost:.2f}')
-    
+
 
 class Clock:
 
