@@ -66,6 +66,7 @@ class Clock:
 #         print(clock.show())
 #         sleep(1)
 #         clock.run()
+#---------------------------------------
 
 class Card:
     def __init__(self,clor,num) -> None:
@@ -80,13 +81,7 @@ class Card:
         faces = ['','A','2','3','4','5','6','7','8','9','10','J','Q','K']
         return f'{suites[self.clor]}{faces[self.num]}'
 
-
-def exit():
-    a = Card('s',2)
-    print(a)
-
-# if __name__ == '__main__':
-#     exit()
+#---------------------------------------
 
 class Poke:
 
@@ -110,8 +105,34 @@ class Poke:
     def has_more(self) -> bool: 
         return self.count < len(self.poke_list)
 
-lst = Poke()
-lst.shuffle()
-print(lst.poke_list)
-while lst.has_more():
-    print (lst.give_cars())
+#---------------------------------------
+
+class Player:
+    def __init__(self,nikename) -> None:
+        self.nikename = nikename
+        self.cards = []
+
+    def get_one_card(self,cars):
+        self.cards.append(cars)
+
+    def arrange(self):
+        self.cards.sort()
+
+    def show(self):
+        print(self.nikename)
+        for card in self.cards:
+            print(card,end=' ')
+        print()
+
+po = Poke()
+po.shuffle()
+print(po.poke_list)
+player1 = Player('aaa')
+player2 = Player('bbb')
+for _ in range(0,15):
+    card = po.give_cars()
+    player1.get_one_card(card)
+    card = po.give_cars()
+    player2.get_one_card(card)
+player1.show()
+player2.show()
