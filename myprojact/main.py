@@ -42,7 +42,7 @@ class Circle:
 
 class Clock:
 
-    def __init__(self,hours=0,minutes=0,seconds=0) -> None:
+    def __init__(self,hours=0,minutes=0,seconds=0) :
         self.hours = hours
         self.minutes = minutes
         self.seconds = seconds
@@ -69,7 +69,7 @@ class Clock:
 #---------------------------------------
 
 class Card:
-    def __init__(self,clor,num) -> None:
+    def __init__(self,clor,num):
         self.clor = clor
         self.num = num
 
@@ -93,7 +93,7 @@ class Poke:
                 self.poke_list.append(car)
         self.count = 0
     
-    def shuffle(self) -> list: 
+    def shuffle(self) -> list:
         self.count = 0
         random.shuffle(self.poke_list)
 
@@ -108,31 +108,35 @@ class Poke:
 #---------------------------------------
 
 class Player:
-    def __init__(self,nikename) -> None:
+    def __init__(self,nikename) :
         self.nikename = nikename
-        self.cards = []
+        self.popcards = []
 
     def get_one_card(self,cars):
-        self.cards.append(cars)
+        self.popcards.append(cars)
 
     def arrange(self):
-        self.cards.sort()
+        self.popcards.sort()
 
     def show(self):
         print(self.nikename)
-        for card in self.cards:
-            print(card,end=' ')
+        for showcard in self.popcards:
+            print(showcard,end=' ')
         print()
 
+# po = Poke()
+# po.shuffle()
+# print(po.poke_list)
+# player1 = Player('name1')
+# player2 = Player('name2')
+# for _ in range(0,15):
+#     card = po.give_cars()
+#     player1.get_one_card(card)
+#     card = po.give_cars()
+#     player2.get_one_card(card)
+# player1.show()
+# player2.show()
 po = Poke()
 po.shuffle()
 print(po.poke_list)
-player1 = Player('aaa')
-player2 = Player('bbb')
-for _ in range(0,15):
-    card = po.give_cars()
-    player1.get_one_card(card)
-    card = po.give_cars()
-    player2.get_one_card(card)
-player1.show()
-player2.show()
+print()
