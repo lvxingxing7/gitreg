@@ -1,6 +1,8 @@
+from enum import Enum
 import math
 import os
 import random
+from unittest import suite
 
 # class Student:
 
@@ -76,6 +78,11 @@ class Card:
     def __repr__(self) -> str:
         return self.show()
 
+    def __lt__(self,other):
+        if self.clor == other.clor:
+            return self.num < other.num
+        return ord(self.clor) < ord(other.clor)
+
     def show(self):
         suites =  {'s': '♠','h':'♥','c':'♣','d':'♦'}
         faces = ['','A','2','3','4','5','6','7','8','9','10','J','Q','K']
@@ -97,7 +104,7 @@ class Poke:
         self.count = 0
         random.shuffle(self.poke_list)
 
-    def give_cars(self):
+    def push_cars(self):
         cars = self.poke_list[self.count]
         self.count += 1
         return cars
@@ -138,5 +145,12 @@ class Player:
 # player2.show()
 po = Poke()
 po.shuffle()
-print(po.poke_list)
-print()
+players = ['aaa','bbb','ccc','ddd']
+for i in players:
+    play = Player(i)
+    for _ in range(0,13):
+        crd = po.push_cars()
+        play.get_one_card(crd)
+        play.arrange()
+    play.show()
+    
