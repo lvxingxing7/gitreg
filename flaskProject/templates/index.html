@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+<body>
+    <h1>鸡吧信息</h1>
+<table>
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>姓名</th>
+        <th>长度</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for key,value in data.items() %}
+    <tr>
+        <td>{{ key }}</td>
+        <td>{{ value.name }}</td>
+        <td>{{ value.lang }}</td>
+        <td><a href="/edit?nid={{ key }}">编辑你的长度</a></td>
+        <td><a href="/delete/{{ key }}">删除你的鸡吧</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
