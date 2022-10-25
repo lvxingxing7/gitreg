@@ -1,0 +1,88 @@
+######this is guidance of java cicd(erp project).
+
+# 全局变量，
+variables:
+##定义docker镜像的tag：
+  IMAGE_TAG: "reg.yilvbao.cn:9088/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_PIPELINE_ID"
+##定义镜像仓库域名
+  Mirror_warehouse: "reg.yilvbao.cn:9088"
+##定义maven选项
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository/"
+##定义deploy阶段要发布到哪个ns下。
+  NS: "test"
+##定义发布到k8s的kubeconfig配置
+  KUBECONFIG: /etc/deploy/config
+
+##定义执行正式脚本前要声明的环境变量----gradle的缓存目录
+before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - echo $GRADLE_USER_HOME 
+##同上
+cache:
+  paths:
+     - .gradle/wrapper
+     - .gradle/caches
+
+# 本pipeline构建的阶段/步骤，下面的每个job必须要归到下面的stage之一：
+stages:
+- package
+- build
+- deploy
+
+#编译打包
+package:
+##手动触发
+ # when: manual
+  stage: package
+##定义runner拉起编译容器的镜像，此镜像需要在runner所在主机存在，如果不存在，必须要主机能够pull下来，否则报错。
+  image: gradle:7.2
+#  tags:
+  #- cluster
+##定义容器内需要执行的脚本。
+  script:
+  - gradle build
+  - ls build/libs
+##将构建物传递到下一个stage
+  artifacts: 
+    paths: 
+      - erp-service/build/libs/$CI_PROJECT_NAME-service-1.0.jar
+  only:
+    - master
+    - dev-1.0.0
+##第二个阶段是构建docker镜像，将上一个阶段的成品打包成docker镜像并推送到镜像仓库
+##这里指定的runner pod需要有docker命令。
+build-image:
+  image: docker:latest 
+  stage: build
+  tags:
+  - docker-in-docker 
+  script:
+  #- sleep 180
+  - echo ${IMAGE_TAG}
+##将PROJECT_NAME传入docker file,按照dockerfile构建docker镜像
+  - docker build --build-arg PROJECT_NAME=$CI_PROJECT_NAME -t ${IMAGE_TAG} .
+##登录到docker registry
+  - docker login ${REGISTRY_HOST} -u ${REGISTRY_USERNAME}  -p ${REGISTRY_PASSWORD} 
+## 推送构建好的镜像
+  - docker push ${IMAGE_TAG}
+  only:
+  - dev
+  - master
+  
+##第三阶段k8s部署：先上传部署模板yaml文件，yaml包含一个deployment，一个service，还有一个ingress。
+   很多地方需要依赖gitlab的环境变量，用环境变量去替换模板yaml文件。然后再通过kubectl apply 来生成相关资源。
+   
+k8s-deploy:
+  stage: deploy
+  image: everpeace/kubectl:latest
+  script:
+    - mkdir -p /etc/deploy/
+    - echo $kube_config |base64 -d > $KUBECONFIG
+    - sed -i s/{{PROJECT_NAME}}/$CI_PROJECT_NAME/g deploy.yaml
+    - sed -i s/{{NAMESPACE}}/$CI_COMMIT_BRANCH/g deploy.yaml
+    - sed -i s/{{PROJECT_NAMESPACE}}/$CI_PROJECT_NAMESPACE/ deploy.yaml
+    - sed -i s/{{IMAGE_TAG}}/$CI_PIPELINE_ID/ deploy.yaml
+    - cat deploy.yaml
+    - echo $CI_COMMIT_BRANCH
+    - kubectl --kubeconfig=/etc/deploy/config apply -f deploy.yaml  --record
+
