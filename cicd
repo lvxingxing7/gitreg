@@ -182,3 +182,103 @@ ADD  $PROJECT_NAME.tar.gz /app/
 RUN  mv /app/dist/*  /usr/share/nginx/html/
 CMD ["nginx", "-g", "daemon off;"]
 EXPOSE 80
+
+
+
+
+
+##################################################################################################
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}
+  name: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}
+    spec:
+      imagePullSecrets:
+      - name: harborsecret
+      containers:
+      - image: reg.shukeyun.com:9088/{{PROJECT_NAMESPACE}}/{{PROJECT_NAME}}:{{IMAGE_TAG}}
+        name: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            cpu: 25m
+            memory: 100Mi
+          requests:
+            cpu: 20m
+            memory: 50Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{NAMESPACE}}
+  name: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}-svc
+  labels:
+    name: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}-svc
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+ 
+    name: http
+    protocol: TCP
+  selector:
+    app: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}
+ 
+---
+
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}-ingress
+  namespace: {{NAMESPACE}}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host:  {{NAMESPACE}}.shukeyun.com
+    http:
+      paths:
+      - path: /{{PROJECT_NAMESPACE}}/{{PROJECT_NAME}}/?(.*)
+        backend:
+          serviceName: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}-svc  
+          servicePort: 80
+
+---
+
+
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}}-hpa
+  namespace: {{NAMESPACE}}
+spec:
+  maxReplicas: 10 ##资源最大副本数
+  minReplicas: 1 ##资源最小副本数
+  ##需要scale的target
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment ##需要伸缩的资源类型
+    name:   {{PROJECT_NAMESPACE}}-{{PROJECT_NAME}} ##需要伸缩的资源名称
+    ##扩容的依据
+  targetCPUUtilizationPercentage: 70 ##触发伸缩的pod cpu使用率
+
