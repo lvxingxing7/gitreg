@@ -1,2 +1,5 @@
-a = [11,53,73,24,73,57,64,23,78]
-print(len(a))
+a = [1]
+if a :
+    print (a)
+else:
+    print ('asdasdsa') 
